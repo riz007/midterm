@@ -1,0 +1,28 @@
+<?Php
+
+require "config.php"; // Database Connection 
+///////////////////////////
+//////////////////////////////// Main Code sarts /////////////////////////////////////////////
+@$department=$_GET['dept_no'];
+//$cat_id=1;
+
+if(!is_numeric($department)){
+$message.="Data Error |";
+exit;
+}
+
+if($department>0){
+$sql="SELECT employees.emp_no, employees.first_name,employees.last_name, employees.gender, employees.hire_date FROM employees INNER JOIN dept_manager ON  employees.emp_no=dept_manager.emp_no WHERE dept_manager.dept_no='$department'";
+}else{
+$sql="SELECT employees.emp_no, employees.first_name,employees.last_name, employees.gender, employees.hire_date FROM employees INNER JOIN dept_manager ON  employees.emp_no=dept_manager.emp_no";
+$department=0;
+}
+//////// collecting data from table ////////
+$row=$dbo->prepare($sql);
+$row->execute();
+$result=$row->fetchAll(PDO::FETCH_ASSOC);
+//////////////
+@$main = array('data'=>$result,'value'=>array("dept_no"=>"$department","message"=>"$message"));
+echo json_encode($main);  // Json string returned 
+
+?>
